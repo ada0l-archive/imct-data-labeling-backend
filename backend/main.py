@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.core.settings import settings
 from backend.handlers import shutdown_handler, startup_handler
-
+from backend.user.api.v1 import router as user_router_v1
 
 def get_application():
     _app = FastAPI(**settings.fastapi_kwargs)
@@ -19,6 +19,7 @@ def get_application():
     )
 
     router_v1 = APIRouter(prefix="/v1")
+    router_v1.include_router(user_router_v1, prefix="/user", tags=["user"])
     _app.include_router(router_v1)
 
     _app.add_event_handler("startup", startup_handler)
