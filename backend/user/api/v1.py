@@ -1,25 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from backend.core.database import get_session
+from backend.invite.dependencies import get_invite_rep
 from backend.invite.repository import InviteRepository
-from backend.user.dependencies import get_user_azure
+from backend.user.dependencies import get_current_user, get_user_azure
+from backend.user.models import User
 from backend.user.repository import UserRepository
 from backend.user.schemas import UserAzure, UserPydantic
 
 router = APIRouter()
 
 
-def get_user_rep(session=Depends(get_session)):
-    return UserRepository(session)
-
-
-def get_invite_rep(session=Depends(get_session)):
-    return InviteRepository(session)
-
-
 @router.post("/", response_model=UserPydantic)
 async def create_user(
-    user_rep: UserRepository = Depends(get_user_rep),
+    user_rep: UserRepository = Depends(get_user_azure),
     invite_rep: InviteRepository = Depends(get_invite_rep),
     user: UserAzure = Depends(get_user_azure)
 ):
@@ -36,3 +29,12 @@ async def create_user(
             status_code=status.HTTP_409_CONFLICT
         )
     return await user_rep.create(user)
+
+me_router = APIRouter()
+
+
+@me_router.get("/", response_model=UserPydantic)
+async def get_me(
+    user: User = Depends(get_current_user)
+):
+    return user
