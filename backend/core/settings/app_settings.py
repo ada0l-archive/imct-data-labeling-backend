@@ -41,7 +41,7 @@ class AppSettings(BaseAppSettings):
     mcs_storage_secret_key_id: str
 
     installed_apps = [
-        "backend.user",
+        "backend.invite",
     ]
 
     models = []
