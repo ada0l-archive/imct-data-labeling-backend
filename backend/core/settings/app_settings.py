@@ -42,6 +42,7 @@ class AppSettings(BaseAppSettings):
 
     installed_apps = [
         "backend.invite",
+        "backend.user",
     ]
 
     models = []
