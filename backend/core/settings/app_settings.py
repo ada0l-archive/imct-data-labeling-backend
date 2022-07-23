@@ -37,6 +37,11 @@ class AppSettings(BaseAppSettings):
     logging_level = logging.INFO
     loggers: tuple[str, str] = ("uvicorn.asgi", "uvicorn.access")
 
+
+    openapi_client_id: str
+    app_client_id: str
+    tenant_id: str
+
     mcs_storage_access_key_id: str
     mcs_storage_secret_key_id: str
 
@@ -70,6 +75,11 @@ class AppSettings(BaseAppSettings):
             "redoc_url": self.redoc_url,
             "title": self.title,
             "version": self.version,
+            "swagger_ui_oauth2_redirect_url": '/oauth2-redirect',
+            "swagger_ui_init_oauth": {
+                'usePkceWithAuthorizationCodeGrant': True,
+                'clientId': self.openapi_client_id,
+            },
         }
 
     def configure_logging(self) -> None:
