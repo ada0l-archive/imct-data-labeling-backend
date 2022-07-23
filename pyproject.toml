@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["ada0l <andreika.varfolomeev@yandex.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.78.0"
+loguru = "^0.6.0"
+alembic = "^1.8.0"
+pydantic = {version = "^1.9.1", extras = ["dotenv"]}
+uvicorn = "^0.18.2"
+fastapi-azure-auth = "^3.4.0"
+boto3 = "^1.24.26"
+python-multipart = "^0.0.5"
+SQLAlchemy = {version = "^1.4.39", extras = ["asyncpg"]}
+sqlalchemy-stubs = "^0.4"
+asyncpg = "^0.26.0"
+
+[tool.poetry.dev-dependencies]
+isort = "^5.10.1"
+black = "^22.6.0"
+flake8 = "^4.0.1"
+mypy = "^0.961"
+autopep8 = "^1.6.0"
+
+[tool.isort]
+profile = "black"
+known_first_party = "app"
+
+[tool.black]
+line-length = 79
+target-version = ['py310']
+
+[tool.flake8]
+max-complexity = 7
+statistics = true
+max-line-length = 79
+ignore = "W503,E203"
+per-file-ignores = "__init__.py: F401"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
