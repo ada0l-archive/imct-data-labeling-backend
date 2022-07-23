@@ -20,7 +20,7 @@ async def create_user(
     if not invite:
         raise HTTPException(
             detail="You weren't invited",
-            status_code=status.HTTP_409_FORBIDDEN
+            status_code=status.HTTP_409_CONFLICT
         )
     user_in_db = await user_rep.get_by_email(user.email)
     if user_in_db:
