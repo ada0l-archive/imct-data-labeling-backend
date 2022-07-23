@@ -14,7 +14,30 @@ from backend.user.schemas import UserAzure, UserPydantic
 router = APIRouter()
 
 
-@router.post("/", response_model=UserPydantic)
+@router.post(
+    "/",
+    response_model=UserPydantic,
+    responses={
+        409: {
+            "content": {
+                "application/json": {
+                    "examples": {
+                        "email busy": {
+                            "value": {
+                                "detail": "This email is already taken"
+                            }
+                        },
+                        "not invited": {
+                            "value": {
+                                "detail": "You weren't invited"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+)
 async def create_user(
     user_rep: UserRepository = Depends(get_user_rep),
     invite_rep: InviteRepository = Depends(get_invite_rep),
