@@ -2,7 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from backend.invite.dependencies import get_invite_rep
 from backend.invite.repository import InviteRepository
-from backend.user.dependencies import get_current_user, get_user_azure
+from backend.user.dependencies import (
+    get_current_user,
+    get_user_azure,
+    get_user_rep
+)
 from backend.user.models import User
 from backend.user.repository import UserRepository
 from backend.user.schemas import UserAzure, UserPydantic
@@ -12,7 +16,7 @@ router = APIRouter()
 
 @router.post("/", response_model=UserPydantic)
 async def create_user(
-    user_rep: UserRepository = Depends(get_user_azure),
+    user_rep: UserRepository = Depends(get_user_rep),
     invite_rep: InviteRepository = Depends(get_invite_rep),
     user: UserAzure = Depends(get_user_azure)
 ):
