@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from backend.core.schemas import HTTPError
 
 from backend.invite.dependencies import get_invite_rep
 from backend.invite.repository import InviteRepository
@@ -19,6 +20,7 @@ router = APIRouter()
     response_model=UserPydantic,
     responses={
         409: {
+            "model": HTTPError,
             "content": {
                 "application/json": {
                     "examples": {
@@ -62,6 +64,6 @@ me_router = APIRouter()
 
 @me_router.get("/", response_model=UserPydantic)
 async def get_me(
-    user: User = Depends(get_current_user)
+    user: User = Depends(get_current_user),
 ):
     return user
