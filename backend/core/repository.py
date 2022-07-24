@@ -32,9 +32,10 @@ class BaseRepository(
     async def create(
         self,
         schema_in: CreateSchema,
-        commit: bool = True
+        commit: bool = True,
+        **additional_fields
     ) -> Model:
-        db_obj = self._model(**schema_in.dict())  # type: ignore
+        db_obj = self._model(**schema_in.dict(), **additional_fields)  # type: ignore
         self.session.add(db_obj)
         if commit:
             await self.session.commit()
