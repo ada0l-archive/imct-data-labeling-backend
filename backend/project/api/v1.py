@@ -5,8 +5,9 @@ from backend.core.schemas import HTTPError, ListPydantic, PaginationPydantic
 from backend.project.dependencies import get_project_rep
 
 from backend.project.repository import ProjectRepository
-from backend.project.schemas import ProjectPydantic
-from backend.user.dependencies import get_user_azure
+from backend.project.schemas import ProjectInCreatePydantic, ProjectPydantic
+from backend.user.dependencies import get_current_user
+from backend.user.models import User
 
 router = APIRouter()
 
@@ -34,7 +35,7 @@ router = APIRouter()
 async def get_project(
     id: int,
     project_rep: ProjectRepository = Depends(get_project_rep),
-    _=Depends(get_user_azure)
+    _=Depends(get_current_user)
 ):
     project = await project_rep.get_by_id(id)
     if not project:
@@ -52,9 +53,21 @@ async def get_project(
 async def get_projects(
     pagination: PaginationPydantic = Depends(get_pagination),
     project_rep: ProjectRepository = Depends(get_project_rep),
-    _=Depends(get_user_azure)
+    _=Depends(get_current_user)
 ):
     projects = await project_rep.get_multi(pagination)
     return ListPydantic( # type: ignore
         items=projects,
     )
+
+
+@router.post(
+    "/",
+    response_model=ProjectPydantic
+)
+async def create_project(
+    obj_in: ProjectInCreatePydantic,
+    project_rep: ProjectRepository = Depends(get_project_rep),
+    user: User =Depends(get_current_user)
+):
+    return await project_rep.create(obj_in, creator_id=user.id)
