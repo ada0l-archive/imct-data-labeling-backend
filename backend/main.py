@@ -6,6 +6,8 @@ from backend.handlers import shutdown_handler, startup_handler
 from backend.user.api.v1 import router as user_router_v1
 from backend.user.api.v1 import me_router as me_user_router_v1
 from backend.project.api.v1 import router as project_router_v1
+from backend.project_label_type.api.v1 import router as\
+    project_label_type_router_v1
 
 def get_application():
     _app = FastAPI(**settings.fastapi_kwargs)
@@ -25,6 +27,9 @@ def get_application():
     router_v1.include_router(me_user_router_v1, prefix="/me", tags=["me"])
     router_v1.include_router(project_router_v1,
                              prefix="/project", tags=["project"])
+    router_v1.include_router(project_label_type_router_v1,
+                             prefix="/projec-label-type",
+                             tags=["project-label-type"])
     _app.include_router(router_v1)
 
     _app.add_event_handler("startup", startup_handler)

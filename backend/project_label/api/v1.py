@@ -4,5 +4,5 @@ router = APIRouter()
 
 
 @router.get("/")
-def get_label_type():
-    return "label_type app created!"
+def get_project_label():
+    return "project_label app created!"

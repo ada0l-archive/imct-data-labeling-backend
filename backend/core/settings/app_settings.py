@@ -49,6 +49,7 @@ class AppSettings(BaseAppSettings):
         "backend.invite",
         "backend.user",
         "backend.project",
+        "backend.project_label",
     ]
 
     models = []
