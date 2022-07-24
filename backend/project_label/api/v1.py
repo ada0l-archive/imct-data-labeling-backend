@@ -1,8 +1,73 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Body, Depends, HTTPException, status
+from backend.core.dependencies import get_pagination
+from backend.core.schemas import HTTPError, ListPydantic, PaginationPydantic
+from backend.project.dependencies import get_project_rep
+from backend.project.repository import ProjectRepository
+from backend.project_label.dependencies import get_project_label_rep
+from backend.project_label.repository import ProjectLabelRepository
+from backend.project_label.schemas import ProjectLabelInCreatePydantic, ProjectLabelPydantic
+
+from backend.user.dependencies import get_current_user
 
 router = APIRouter()
 
+responses = {
+    409: {
+        "model": HTTPError,
+        "content": {
+            "application/json": {
+                "examples": {
+                    "project not exist": {
+                        "value": {
+                            "detail": "Project is not exist"
+                        }
+                    },
+                }
+            }
+        }
+    }
+}
 
-@router.get("/")
-def get_project_label():
-    return "project_label app created!"
+
+@router.post(
+    "/",
+    response_model=ProjectLabelPydantic,
+    responses=responses # type: ignore
+)
+async def create_project_label(
+    obj_in: ProjectLabelInCreatePydantic = Body(...),
+    project_id: int = Body(...),
+    project_label_rep: ProjectLabelRepository = Depends(get_project_label_rep),
+    project_rep: ProjectRepository = Depends(get_project_rep),
+    _=Depends(get_current_user)
+):
+    project = await project_rep.get_by_id(project_id)
+    if not project:
+        raise HTTPException(
+            detail="Project is not exist",
+            status_code=status.HTTP_409_CONFLICT
+        )
+    return await project_label_rep.create(obj_in, project_id=project_id)
+
+
+@router.get(
+    "/",
+    response_model=ListPydantic[ProjectLabelPydantic],
+    responses=responses # type: ignore
+)
+async def get_project_labels(
+    project_id: int,
+    project_label_rep: ProjectLabelRepository = Depends(get_project_label_rep),
+    project_rep: ProjectRepository = Depends(get_project_rep),
+    pagination: PaginationPydantic = Depends(get_pagination),
+    _=Depends(get_current_user)
+):
+    project = await project_rep.get_by_id(project_id)
+    if not project:
+        raise HTTPException(
+            detail="Project is not exist",
+            status_code=status.HTTP_409_CONFLICT
+        )
+    return ListPydantic( # type: ignore
+        items=await project_label_rep.get_multi(project_id, pagination)
+    )

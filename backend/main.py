@@ -8,6 +8,8 @@ from backend.user.api.v1 import me_router as me_user_router_v1
 from backend.project.api.v1 import router as project_router_v1
 from backend.project_label_type.api.v1 import router as\
     project_label_type_router_v1
+from backend.project_label.api.v1 import router as\
+    project_label_router_v1
 
 def get_application():
     _app = FastAPI(**settings.fastapi_kwargs)
@@ -30,6 +32,9 @@ def get_application():
     router_v1.include_router(project_label_type_router_v1,
                              prefix="/projec-label-type",
                              tags=["project-label-type"])
+    router_v1.include_router(project_label_router_v1,
+                             prefix="/projec-label",
+                             tags=["project-label"])
     _app.include_router(router_v1)
 
     _app.add_event_handler("startup", startup_handler)
