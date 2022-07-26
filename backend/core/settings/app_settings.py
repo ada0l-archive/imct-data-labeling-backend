@@ -50,6 +50,7 @@ class AppSettings(BaseAppSettings):
         "backend.user",
         "backend.project",
         "backend.project_label",
+        "backend.dataset",
     ]
 
     models = []
