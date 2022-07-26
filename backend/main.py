@@ -10,6 +10,8 @@ from backend.project_label_type.api.v1 import router as\
     project_label_type_router_v1
 from backend.project_label.api.v1 import router as\
     project_label_router_v1
+from backend.dataset.api.v1 import router as\
+    dataset_router_v1
 
 def get_application():
     _app = FastAPI(**settings.fastapi_kwargs)
@@ -35,6 +37,9 @@ def get_application():
     router_v1.include_router(project_label_router_v1,
                              prefix="/projec-label",
                              tags=["project-label"])
+    router_v1.include_router(dataset_router_v1,
+                             prefix="/dataset",
+                             tags=["dataset"])
     _app.include_router(router_v1)
 
     _app.add_event_handler("startup", startup_handler)
