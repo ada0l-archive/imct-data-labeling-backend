@@ -12,6 +12,8 @@ from backend.project_label.api.v1 import router as\
     project_label_router_v1
 from backend.dataset.api.v1 import router as\
     dataset_router_v1
+from backend.image.api.v1 import router as\
+    image_router_v1
 
 def get_application():
     _app = FastAPI(**settings.fastapi_kwargs)
@@ -40,6 +42,9 @@ def get_application():
     router_v1.include_router(dataset_router_v1,
                              prefix="/dataset",
                              tags=["dataset"])
+    router_v1.include_router(image_router_v1,
+                             prefix="/image",
+                             tags=["image"])
     _app.include_router(router_v1)
 
     _app.add_event_handler("startup", startup_handler)
