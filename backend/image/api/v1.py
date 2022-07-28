@@ -77,13 +77,13 @@ async def get_images(
     _=Depends(get_current_user)
 ):
     if project_id is not None:
-        project = await project_rep.get_by_id(dataset_id) # type: ignore
+        project = await project_rep.get_by_id(project_id) # type: ignore
         if not project:
             raise HTTPException(
-                detail="Dataset does not exist",
+                detail="Project does not exist",
                 status_code=status.HTTP_409_CONFLICT
             )
-    if project_id is not None:
+    if dataset_id is not None:
         dataset = await dataset_rep.get_by_id(dataset_id) # type: ignore
         if not dataset:
             raise HTTPException(
