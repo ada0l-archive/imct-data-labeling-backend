@@ -3,13 +3,13 @@ from pydantic import BaseModel
 
 def get_label_scheme_by_type(type: str):
     return {
-        'classifion': ClassifionLabel,
+        'simple': SimpleLabel,
         'rectangle': RectangleLabel,
         'polygon': PolygonLabel
     }[type]
 
 
-class ClassifionLabel(BaseModel):
+class SimpleLabel(BaseModel):
     pass
 
 

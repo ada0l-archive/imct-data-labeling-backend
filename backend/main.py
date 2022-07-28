@@ -16,6 +16,8 @@ from backend.image.api.v1 import router as\
     image_router_v1
 from backend.label.api.v1 import router as\
     label_router_v1
+from backend.dashboard.api.v1 import router as\
+    dashboard_router_v1
 
 def get_application():
     _app = FastAPI(**settings.fastapi_kwargs)
@@ -50,6 +52,9 @@ def get_application():
     router_v1.include_router(label_router_v1,
                              prefix="/label",
                              tags=["label"])
+    router_v1.include_router(dashboard_router_v1,
+                             prefix="/dashboard",
+                             tags=["dashboard"])
     _app.include_router(router_v1)
 
     _app.add_event_handler("startup", startup_handler)
