@@ -45,6 +45,10 @@ class AppSettings(BaseAppSettings):
     mcs_storage_access_key_id: str
     mcs_storage_secret_key_id: str
 
+    localstack_url: str
+    localstack_access_key: str
+    localstack_secret_key: str
+
     installed_apps = [
         "backend.invite",
         "backend.user",
