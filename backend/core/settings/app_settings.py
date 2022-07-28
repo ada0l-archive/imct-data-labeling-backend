@@ -56,6 +56,7 @@ class AppSettings(BaseAppSettings):
         "backend.project_label",
         "backend.dataset",
         "backend.image",
+        "backend.label",
     ]
 
     models = []
