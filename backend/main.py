@@ -2,7 +2,7 @@ from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.core.settings import settings
-from backend.handlers import shutdown_handler, startup_handler
+from backend.handlers import create_bucket_for_images, shutdown_handler, startup_handler
 from backend.user.api.v1 import router as user_router_v1
 from backend.user.api.v1 import me_router as me_user_router_v1
 from backend.project.api.v1 import router as project_router_v1
@@ -18,6 +18,8 @@ from backend.label.api.v1 import router as\
     label_router_v1
 from backend.dashboard.api.v1 import router as\
     dashboard_router_v1
+from backend.export.api.v1 import router as\
+    export_router_v1
 
 def get_application():
     _app = FastAPI(**settings.fastapi_kwargs)
@@ -55,9 +57,13 @@ def get_application():
     router_v1.include_router(dashboard_router_v1,
                              prefix="/dashboard",
                              tags=["dashboard"])
+    router_v1.include_router(export_router_v1,
+                             prefix="/export",
+                             tags=["export"])
     _app.include_router(router_v1)
 
     _app.add_event_handler("startup", startup_handler)
+    _app.add_event_handler("startup", create_bucket_for_images)
     _app.add_event_handler("shutdown", shutdown_handler)
 
     return _app
