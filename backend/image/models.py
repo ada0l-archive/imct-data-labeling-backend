@@ -17,3 +17,4 @@ class Image(Base):
         Integer, ForeignKey(User.id, ondelete="CASCADE"), nullable=True
     )
     creator = relationship("User")
+    labels = relationship("Label", uselist=True)

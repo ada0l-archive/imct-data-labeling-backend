@@ -1,6 +1,7 @@
 from typing import Type
 
-from sqlalchemy import and_, func, select
+from sqlalchemy import func, select
+from sqlalchemy.orm import joinedload, selectinload
 
 from backend.core.repository import BaseRepository
 from backend.core.schemas import PaginationPydantic
@@ -37,17 +38,6 @@ class LabelRepository(
             )  # type: ignore
         q = await self.session.execute(stmt)
         return q.scalars().all()
-
-    # async def get_for_export(
-    #     self,
-    #     project_id: int | None = None
-    # ):
-    #     stmt = select(self._model).alias
-    #     if project_id:
-    #         stmt = stmt.\
-    #             filter(self._model.image_id == image_id) # type: ignore
-    #     q = await self.session.execute(stmt)
-    #     return q.scalars().all()
 
     async def get_labeling_progress(self, project_id: int) -> dict[str, int]:
         stmt = (
@@ -93,9 +83,9 @@ class LabelRepository(
         for row in q:
             result.append(
                 {
-                    'name': row[0],
-                    'type': LabelType(row[1]).name,
-                    'count': row[2],
+                    "name": row[0],
+                    "type": LabelType(row[1]).name,
+                    "count": row[2],
                 }
             )
         return result
