@@ -126,3 +126,22 @@ async def put_project_label(
         )
 
     return await project_label_rep.update(project_label, obj_in)
+
+
+@router.delete(
+    "/{id}",
+    response_model=ProjectLabelPydantic,
+    responses=responses_project_label_not_found,  # type: ignore
+)
+async def delete_project_label(
+    id: int,
+    project_label_rep: ProjectLabelRepository = Depends(get_project_label_rep),
+    _=Depends(get_current_user),
+):
+    project_label = await project_label_rep.get_by_id(id)
+    if not project_label:
+        raise HTTPException(
+            detail="Project label not found",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    return await project_label_rep.delete_by_id(id)
