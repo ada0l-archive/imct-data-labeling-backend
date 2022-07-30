@@ -1,7 +1,7 @@
 from typing import Type
 
-from backend.project import schemas, models
 from backend.core.repository import BaseRepository
+from backend.project import models, schemas
 
 
 class ProjectRepository(
@@ -9,10 +9,9 @@ class ProjectRepository(
         models.Project,
         schemas.ProjectPydantic,
         schemas.ProjectInCreatePydantic,
-        schemas.ProjectInUpdatePydantic
+        schemas.ProjectInUpdatePydantic,
     ]
 ):
-
     @property
     def _model(self) -> Type[models.Project]:
         return models.Project

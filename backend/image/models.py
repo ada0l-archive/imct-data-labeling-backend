@@ -9,11 +9,11 @@ from backend.user.models import User
 class Image(Base):
     id = Column(Integer, primary_key=True)
     uuid = Column(String, nullable=False)
-    dataset_id = Column(Integer,
-                        ForeignKey(Dataset.id, ondelete="CASCADE"),
-                        nullable=True)
+    dataset_id = Column(
+        Integer, ForeignKey(Dataset.id, ondelete="CASCADE"), nullable=True
+    )
     dataset = relationship("Dataset")
-    creator_id = Column(Integer,
-                        ForeignKey(User.id, ondelete="CASCADE"),
-                        nullable=True)
+    creator_id = Column(
+        Integer, ForeignKey(User.id, ondelete="CASCADE"), nullable=True
+    )
     creator = relationship("User")

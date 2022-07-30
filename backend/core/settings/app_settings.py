@@ -37,7 +37,6 @@ class AppSettings(BaseAppSettings):
     logging_level = logging.INFO
     loggers: tuple[str, str] = ("uvicorn.asgi", "uvicorn.access")
 
-
     openapi_client_id: str
     app_client_id: str
     tenant_id: str
@@ -97,10 +96,12 @@ class AppSettings(BaseAppSettings):
         for logger_name in self.loggers:
             logging_logger = logging.getLogger(logger_name)
             logging_logger.handlers = [
-                InterceptHandler(level=self.logging_level)]
+                InterceptHandler(level=self.logging_level)
+            ]
 
         logger.configure(
-            handlers=[{"sink": sys.stderr, "level": self.logging_level}])
+            handlers=[{"sink": sys.stderr, "level": self.logging_level}]
+        )
 
 
 class DevAppSettings(AppSettings):

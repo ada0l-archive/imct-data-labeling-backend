@@ -1,5 +1,4 @@
 from fastapi_azure_auth import SingleTenantAzureAuthorizationCodeBearer
-
 from pydantic import BaseModel
 
 from backend.core.settings import settings
@@ -9,7 +8,7 @@ azure_scheme = SingleTenantAzureAuthorizationCodeBearer(
     tenant_id=settings.tenant_id,
     scopes={
         f'api://{settings.app_client_id}/user_impersonation': 'user_impersonation',
-    }
+    },
 )
 
 azure_scheme_without_error = SingleTenantAzureAuthorizationCodeBearer(
@@ -18,7 +17,7 @@ azure_scheme_without_error = SingleTenantAzureAuthorizationCodeBearer(
     scopes={
         f'api://{settings.app_client_id}/user_impersonation': 'user_impersonation',
     },
-    auto_error=False
+    auto_error=False,
 )
 
 

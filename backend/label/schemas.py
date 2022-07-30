@@ -5,7 +5,7 @@ def get_label_scheme_by_type(type: str):
     return {
         'simple': SimpleLabel,
         'rectangle': RectangleLabel,
-        'polygon': PolygonLabel
+        'polygon': PolygonLabel,
     }[type]
 
 

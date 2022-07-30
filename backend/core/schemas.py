@@ -1,4 +1,5 @@
 from typing import Generic, TypeVar
+
 from pydantic import BaseModel, Field, root_validator
 from pydantic.generics import GenericModel
 
@@ -29,6 +30,6 @@ class ListPydantic(GenericModel, Generic[DataT]):
     count: int | None
 
     @root_validator
-    def compute_count(cls, values) -> dict: # noqa
+    def compute_count(cls, values) -> dict:  # noqa
         values["count"] = len(values.get("items") if "items" in values else [])
         return values

@@ -1,4 +1,5 @@
 import logging
+
 import boto3
 
 from backend.core.settings import settings
@@ -20,11 +21,7 @@ async def upload_image(file_obj, obj_name=None):
     try:
         client = get_s3_client()
         content = await file_obj.read()
-        client.put_object(
-            Body=content,
-            Bucket="images",
-            Key=f"{obj_name}"
-        )
+        client.put_object(Body=content, Bucket="images", Key=f"{obj_name}")
     except Exception as e:
         logging.error(e)
         return False

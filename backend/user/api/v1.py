@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from backend.core.schemas import HTTPError
 
+from backend.core.schemas import HTTPError
 from backend.invite.dependencies import get_invite_rep
 from backend.invite.repository import InviteRepository
 from backend.user.dependencies import (
     get_current_user,
     get_user_azure,
-    get_user_rep
+    get_user_rep,
 )
 from backend.user.models import User
 from backend.user.repository import UserRepository
@@ -25,39 +25,35 @@ router = APIRouter()
                 "application/json": {
                     "examples": {
                         "email busy": {
-                            "value": {
-                                "detail": "This email is already taken"
-                            }
+                            "value": {"detail": "This email is already taken"}
                         },
                         "not invited": {
-                            "value": {
-                                "detail": "You weren't invited"
-                            }
-                        }
+                            "value": {"detail": "You weren't invited"}
+                        },
                     }
                 }
-            }
+            },
         }
     },
 )
 async def create_user(
     user_rep: UserRepository = Depends(get_user_rep),
     invite_rep: InviteRepository = Depends(get_invite_rep),
-    user: UserAzure = Depends(get_user_azure)
+    user: UserAzure = Depends(get_user_azure),
 ):
     invite = await invite_rep.get_by_email(user.email)
     if not invite:
         raise HTTPException(
-            detail="You weren't invited",
-            status_code=status.HTTP_409_CONFLICT
+            detail="You weren't invited", status_code=status.HTTP_409_CONFLICT
         )
     user_in_db = await user_rep.get_by_email(user.email)
     if user_in_db:
         raise HTTPException(
             detail="This email is already taken",
-            status_code=status.HTTP_409_CONFLICT
+            status_code=status.HTTP_409_CONFLICT,
         )
     return await user_rep.create(user)
+
 
 me_router = APIRouter()
 

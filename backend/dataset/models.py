@@ -10,11 +10,11 @@ class Dataset(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    project_id = Column(Integer,
-                        ForeignKey(Project.id, ondelete="CASCADE"),
-                        nullable=True)
+    project_id = Column(
+        Integer, ForeignKey(Project.id, ondelete="CASCADE"), nullable=True
+    )
     project = relationship("Project")
-    creator_id = Column(Integer,
-                        ForeignKey(User.id, ondelete="CASCADE"),
-                        nullable=True)
+    creator_id = Column(
+        Integer, ForeignKey(User.id, ondelete="CASCADE"), nullable=True
+    )
     creator = relationship("User")

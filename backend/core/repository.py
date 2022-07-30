@@ -1,5 +1,5 @@
 import abc
-from typing import Generic, TypeVar, Type
+from typing import Generic, Type, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -30,10 +30,7 @@ class BaseRepository(
         return select(self._model)  # type: ignore
 
     async def create(
-        self,
-        schema_in: CreateSchema,
-        commit: bool = True,
-        **additional_fields
+        self, schema_in: CreateSchema, commit: bool = True, **additional_fields
     ) -> Model:
         db_obj = self._model(**schema_in.dict(), **additional_fields)  # type: ignore
         self.session.add(db_obj)
@@ -44,20 +41,16 @@ class BaseRepository(
 
     async def get_by_id(self, obj_id: int) -> Model:
         q = await self.session.execute(
-            self
-            .get_query()
-            .filter(self._model.id == obj_id)  # type: ignore
+            self.get_query().filter(self._model.id == obj_id)  # type: ignore
         )
         return q.scalars().first()
 
     async def get_multi(
-        self,
-        pagination: PaginationPydantic | None = None
+        self, pagination: PaginationPydantic | None = None
     ) -> list[Model]:
         if pagination:
             q = await self.session.execute(
-                self.
-                get_query()
+                self.get_query()
                 .limit(pagination.limit)
                 .offset(pagination.offset)
             )
@@ -66,10 +59,7 @@ class BaseRepository(
         return q.scalars().all()
 
     async def update(
-        self,
-        obj: Model,
-        obj_in: UpdateSchema,
-        commit: bool = True
+        self, obj: Model, obj_in: UpdateSchema, commit: bool = True
     ) -> Model:
         obj_data = jsonable_encoder(obj)
         update_data = obj_in.dict(exclude_unset=True)
@@ -82,19 +72,11 @@ class BaseRepository(
         await self.session.refresh(obj)
         return obj
 
-    async def delete_by_id(
-        self,
-        obj_id: int,
-        commit: bool = True
-    ) -> Model:
+    async def delete_by_id(self, obj_id: int, commit: bool = True) -> Model:
         obj = await self.get_by_id(obj_id=obj_id)
         return await self.delete(obj=obj, commit=commit)
 
-    async def delete(
-        self,
-        obj: Model,
-        commit: bool = True
-    ) -> Model:
+    async def delete(self, obj: Model, commit: bool = True) -> Model:
         await self.session.delete(obj)
         if commit:
             await self.session.commit()
