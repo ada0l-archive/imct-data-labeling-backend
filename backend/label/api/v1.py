@@ -115,3 +115,18 @@ async def get_label(
             status_code=status.HTTP_404_NOT_FOUND,
         )
     return label
+
+
+@router.delete("/{id}", response_model=LabelPydantic)
+async def delete_label(
+    id: int,
+    label_rep: LabelRepository = Depends(get_label_rep),
+    _=Depends(get_current_user),
+):
+    label = await label_rep.get_by_id(id)
+    if not label:
+        raise HTTPException(
+            detail="Label does not found",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    return await label_rep.delete_by_id(id)
