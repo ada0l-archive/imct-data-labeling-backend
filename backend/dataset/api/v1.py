@@ -88,6 +88,25 @@ async def get_dataset(
     return dataset
 
 
+@router.delete(
+    "/{id}",
+    response_model=DatasetPydantic,
+    responses={**responses_dataset_not_found},
+)
+async def delete_dataset(
+    id: int,
+    dataset_rep: DatasetRepository = Depends(get_dataset_rep),
+    _=Depends(get_current_user),
+):
+    dataset = await dataset_rep.get_by_id(id)
+    if not dataset:
+        raise HTTPException(
+            detail="Dataset label not found",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    return await dataset_rep.delete_by_id(id)
+
+
 @router.get(
     "/",
     response_model=ListPydantic[DatasetPydantic],
