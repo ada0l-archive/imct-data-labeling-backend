@@ -38,6 +38,26 @@ example_dataset_not_exist = {
 }
 
 
+@router.delete(
+    "/{id}",
+    response_model=ImagePydantic,
+    responses={**responses_image_not_found},
+)
+async def delete_image(
+    id: int,
+    image_rep: ImageRepository = Depends(get_image_rep),
+    _=Depends(get_current_user),
+):
+    image = await image_rep.get_by_id(id)
+    if not image:
+        raise HTTPException(
+            detail="Image is not found",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    return await image_rep.delete_by_id(id)
+
+
+
 @router.get(
     "/",
     response_model=ListPydantic,
