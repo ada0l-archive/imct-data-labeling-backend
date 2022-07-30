@@ -5,7 +5,7 @@ from backend.core.dependencies import get_pagination
 from backend.core.schemas import HTTPError, ListPydantic, PaginationPydantic
 from backend.project.dependencies import get_project_rep
 from backend.project.repository import ProjectRepository
-from backend.project.schemas import ProjectInCreatePydantic, ProjectPydantic
+from backend.project.schemas import ProjectInCreatePydantic, ProjectInUpdatePydantic, ProjectPydantic
 from backend.user.dependencies import get_current_user
 from backend.user.models import User
 
@@ -66,3 +66,68 @@ async def create_project(
     user: User = Depends(get_current_user),
 ):
     return await project_rep.create(obj_in, creator_id=user.id)
+
+
+@router.delete(
+    "/{id}",
+    response_model=ProjectPydantic,
+    responses={
+        404: {
+            "model": HTTPError,
+            "content": {
+                "application/json": {
+                    "examples": {
+                        "not found": {
+                            "value": {"detail": "Project is not found"}
+                        },
+                    }
+                }
+            },
+        }
+    },
+)
+async def delete_project(
+    id: int,
+    project_rep: ProjectRepository = Depends(get_project_rep),
+    _=Depends(get_current_user),
+):
+    project = await project_rep.get_by_id(id)
+    if not project:
+        raise HTTPException(
+            detail="Project is not found",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    return await project_rep.delete_by_id(id)
+
+
+@router.put(
+    "/{id}",
+    response_model=ProjectPydantic,
+    responses={
+        404: {
+            "model": HTTPError,
+            "content": {
+                "application/json": {
+                    "examples": {
+                        "not found": {
+                            "value": {"detail": "Project is not found"}
+                        },
+                    }
+                }
+            },
+        }
+    },
+)
+async def update_project(
+    id: int,
+    obj_in: ProjectInUpdatePydantic,
+    project_rep: ProjectRepository = Depends(get_project_rep),
+    _=Depends(get_current_user),
+):
+    project = await project_rep.get_by_id(id)
+    if not project:
+        raise HTTPException(
+            detail="Project is not found",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    return await project_rep.update(project, obj_in)
